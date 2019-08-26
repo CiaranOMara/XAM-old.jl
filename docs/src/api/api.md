@@ -10,11 +10,12 @@ end
 ## Contents
 
 ```@contents
-Pages = ["public.md"]
+Pages = ["api.md"]
 ```
 
+## Index
 ```@index
-Pages = ["public.md"]
+Pages = ["api.md"]
 ```
 
 ## SAM API
