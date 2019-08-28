@@ -8,7 +8,7 @@ import BioAlignments
 import XAM: XAM, SAM
 import GenomicFeatures: GenomicFeatures, Interval
 import BioSequences
-import BioCore: BioCore, isfilled, header
+import BioGenerics: BioGenerics, isfilled, header
 
 include("bai.jl")
 include("auxdata.jl")

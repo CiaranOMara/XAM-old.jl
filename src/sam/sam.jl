@@ -6,9 +6,9 @@ module SAM
 import Automa
 import Automa.RegExp: @re_str
 import BioAlignments
-import BioCore.Exceptions: missingerror
-import BioCore.RecordHelper: unsafe_parse_decimal
-import BioCore: BioCore, isfilled, header
+import BioGenerics.Exceptions: missingerror
+import BioGenerics.RecordHelper: unsafe_parse_decimal
+import BioGenerics: BioGenerics, isfilled, header
 import BioSequences
 import BufferedStreams
 using Printf: @sprintf

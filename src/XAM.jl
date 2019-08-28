@@ -15,7 +15,7 @@ export
     sequence,
     hassequence
 
-import BioCore: BioCore, distance, header, isfilled, seqname, hasseqname, sequence, hassequence, leftposition, rightposition, hasleftposition, hasrightposition
+import BioGenerics: BioGenerics, distance, header, isfilled, seqname, hasseqname, sequence, hassequence, leftposition, rightposition, hasleftposition, hasrightposition
 import GenomicFeatures: eachoverlap
 
 include("sam/sam.jl")

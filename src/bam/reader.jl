@@ -10,7 +10,7 @@ Create a data reader of the BAM file format.
 * `input`: data source
 * `index=nothing`: filepath to a random access index (currently *bai* is supported)
 """
-mutable struct Reader{T} <: BioCore.IO.AbstractReader
+mutable struct Reader{T} <: BioGenerics.IO.AbstractReader
     stream::BGZFStreams.BGZFStream{T}
     header::SAM.Header
     start_offset::BGZFStreams.VirtualOffset
@@ -23,7 +23,7 @@ function Base.eltype(::Type{Reader{T}}) where T
     return Record
 end
 
-function BioCore.IO.stream(reader::Reader)
+function BioGenerics.IO.stream(reader::Reader)
     return reader.stream
 end
 
@@ -52,7 +52,7 @@ Get the header of `reader`.
 
 If `fillSQ` is `true`, this function fills missing "SQ" metainfo in the header.
 """
-function BioCore.header(reader::Reader; fillSQ::Bool=false)::SAM.Header
+function BioGenerics.header(reader::Reader; fillSQ::Bool=false)::SAM.Header
     header = reader.header
     if fillSQ
         if !isempty(findall(reader.header, "SQ"))
@@ -66,7 +66,7 @@ function BioCore.header(reader::Reader; fillSQ::Bool=false)::SAM.Header
     return header
 end
 
-# function BioCore.header(reader::Reader)
+# function BioGenerics.header(reader::Reader)
 #     return header(reader)
 # end
 
