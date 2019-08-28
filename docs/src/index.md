@@ -54,9 +54,9 @@ Take a look at the [contributing files](https://github.com/BioJulia/Contributing
 
 ### Financial contributions
 
-We also welcome financial contributions in full transparency on our
-[open collective](https://opencollective.com/biojulia).
-Anyone can file an expense. If the expense makes sense for the development of the community, it will be "merged" in the ledger of our open collective by the core contributors and the person who filed the expense will be reimbursed.
+We also welcome financial contributions in full transparency on our [open collective](https://opencollective.com/biojulia).
+Anyone can file an expense.
+If the expense makes sense for the development of the community, it will be "merged" in the ledger of our open collective by the core contributors and the person who filed the expense will be reimbursed.
 
 
 ## Backers & Sponsors

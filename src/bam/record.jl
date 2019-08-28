@@ -300,20 +300,12 @@ end
 
 Return the number of operations in the CIGAR string of `record`.
 
-Note that in the BAM specification, the field called `cigar` typically stores
-the cigar string of the record.
-However, this is not always true, sometimes the true cigar is very long,
-and due to  some constraints of the BAM format, the actual cigar string is
-stored in an extra tag: `CG:B,I`, and the `cigar` field stores a pseudo-cigar
-string.
+Note that in the BAM specification, the field called `cigar` typically stores the cigar string of the record.
+However, this is not always true, sometimes the true cigar is very long, and due to  some constraints of the BAM format, the actual cigar string is stored in an extra tag: `CG:B,I`, and the `cigar` field stores a pseudo-cigar string.
 
-Calling this method with `checkCG` set to `true` (default) this method will
-always yield the number of operations in the true cigar string, because this is
-probably what you want, the vast majority of the time.
+Calling this method with `checkCG` set to `true` (default) this method will always yield the number of operations in the true cigar string, because this is probably what you want, the vast majority of the time.
 
-If you have a record that stores the true cigar in a `CG:B,I` tag, but you still
-want to get the number of operations in the `cigar` field of the BAM record,
-then set `checkCG` to `false`.
+If you have a record that stores the true cigar in a `CG:B,I` tag, but you still want to get the number of operations in the `cigar` field of the BAM record, then set `checkCG` to `false`.
 """
 function n_cigar_op(record::Record, checkCG::Bool = true)
     return cigar_position(record, checkCG)[2]
@@ -324,20 +316,12 @@ end
 
 Get the CIGAR string of `record`.
 
-Note that in the BAM specification, the field called `cigar` typically stores
-the cigar string of the record.
-However, this is not always true, sometimes the true cigar is very long,
-and due to  some constraints of the BAM format, the actual cigar string is
-stored in an extra tag: `CG:B,I`, and the `cigar` field stores a pseudo-cigar
-string.
+Note that in the BAM specification, the field called `cigar` typically stores the cigar string of the record.
+However, this is not always true, sometimes the true cigar is very long, and due to  some constraints of the BAM format, the actual cigar string is stored in an extra tag: `CG:B,I`, and the `cigar` field stores a pseudo-cigar string.
 
-Calling this method with `checkCG` set to `true` (default) this method will
-always yield the true cigar string, because this is probably what you want
-the vast majority of the time.
+Calling this method with `checkCG` set to `true` (default) this method will always yield the true cigar string, because this is probably what you want the vast majority of the time.
 
-If you have a record that stores the true cigar in a `CG:B,I` tag, but you still
-want to access the pseudo-cigar that is stored in the `cigar` field of the BAM
-record, then you can set checkCG to `false`.
+If you have a record that stores the true cigar in a `CG:B,I` tag, but you still want to access the pseudo-cigar that is stored in the `cigar` field of the BAM record, then you can set checkCG to `false`.
 
 See also `BAM.cigar_rle`.
 """
@@ -354,20 +338,12 @@ end
 
 Get a run-length encoded tuple `(ops, lens)` of the CIGAR string in `record`.
 
-Note that in the BAM specification, the field called `cigar` typically stores
-the cigar string of the record.
-However, this is not always true, sometimes the true cigar is very long,
-and due to  some constraints of the BAM format, the actual cigar string is
-stored in an extra tag: `CG:B,I`, and the `cigar` field stores a pseudo-cigar
-string.
+Note that in the BAM specification, the field called `cigar` typically stores the cigar string of the record.
+However, this is not always true, sometimes the true cigar is very long, and due to  some constraints of the BAM format, the actual cigar string is stored in an extra tag: `CG:B,I`, and the `cigar` field stores a pseudo-cigar string.
 
-Calling this method with `checkCG` set to `true` (default) this method will
-always yield the true cigar string, because this is probably what you want
-the vast majority of the time.
+Calling this method with `checkCG` set to `true` (default) this method will always yield the true cigar string, because this is probably what you want the vast majority of the time.
 
-If you have a record that stores the true cigar in a `CG:B,I` tag, but you still
-want to access the pseudo-cigar that is stored in the `cigar` field of the BAM
-record, then you can set checkCG to `false`.
+If you have a record that stores the true cigar in a `CG:B,I` tag, but you still want to access the pseudo-cigar that is stored in the `cigar` field of the BAM record, then you can set checkCG to `false`.
 
 See also `BAM.cigar`.
 """

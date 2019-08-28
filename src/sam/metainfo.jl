@@ -47,8 +47,7 @@ end
 
 Create a SAM metainfo with `tag` and `value`.
 
-`tag` is a two-byte ASCII string. If `tag` is `"CO"`, `value` must be a string;
-otherwise, `value` is an iterable object with key and value pairs.
+`tag` is a two-byte ASCII string. If `tag` is `"CO"`, `value` must be a string; otherwise, `value` is an iterable object with key and value pairs.
 
 # Examples
 

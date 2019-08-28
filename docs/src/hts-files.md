@@ -3,19 +3,13 @@
 
 ## Introduction
 
-High-throughput sequencing (HTS) technologies generate a large amount of data in
-the form of a large number of nucleotide sequencing reads. One of the most
-common tasks in bioinformatics is to align these reads against known reference
-genomes, chromosomes, or contigs. BioAlignments provides several data formats
-commonly used for this kind of task.
+High-throughput sequencing (HTS) technologies generate a large amount of data in the form of a large number of nucleotide sequencing reads.
+One of the most common tasks in bioinformatics is to align these reads against known reference genomes, chromosomes, or contigs.
+BioAlignments provides several data formats commonly used for this kind of task.
 
-XAM offers high-performance tools for SAM and BAM file formats,
-which are the most popular file formats.
+XAM offers high-performance tools for SAM and BAM file formats, which are the most popular file formats.
 
-If you have questions about the SAM and BAM formats or any of the terminology
-used when discussing these formats, see the published
-[specification](https://samtools.github.io/hts-specs/SAMv1.pdf), which is
-maintained by the [samtools group](https://samtools.github.io/).
+If you have questions about the SAM and BAM formats or any of the terminology used when discussing these formats, see the published [specification](https://samtools.github.io/hts-specs/SAMv1.pdf), which is maintained by the [samtools group](https://samtools.github.io/).
 
 A very very simple SAM file looks like the following:
 
@@ -30,16 +24,13 @@ r003 2064 ref 29 17 6H5M       *  0   0 TAGGC             * SA:Z:ref,9,+,5S6M,30
 r001  147 ref 37 30 9M         =  7 -39 CAGCGGCAT         * NM:i:1
 ```
 
-Where the first two lines are part of the "header", and the following lines are
-"records". Each record describes how a read aligns to some reference sequence.
-Sometimes one record describes one read, but there are other cases like chimeric
-reads and split alignments, where multiple records apply to one read. In the
-example above, `r003` is a chimeric read, and `r004` is a split alignment,
-and `r001` are mate pair reads. Again, we refer you to the official
-[specification](https://samtools.github.io/hts-specs/SAMv1.pdf) for more details.
+Where the first two lines are part of the "header", and the following lines are "records".
+Each record describes how a read aligns to some reference sequence.
+Sometimes one record describes one read, but there are other cases like chimeric reads and split alignments, where multiple records apply to one read.
+In the example above, `r003` is a chimeric read, and `r004` is a split alignment, and `r001` are mate pair reads.
+Again, we refer you to the official [specification](https://samtools.github.io/hts-specs/SAMv1.pdf) for more details.
 
-A BAM file stores this same information but in a binary and compressible format
-that does not make for pretty printing here!
+A BAM file stores this same information but in a binary and compressible format that does not make for pretty printing here!
 
 ## Reading SAM and BAM files
 
@@ -64,11 +55,9 @@ end
 close(reader)
 ```
 
-The size of a BAM file is often extremely large. The iterator interface
-demonstrated above allocates an object for each record and that may be a
-bottleneck of reading data from a BAM file.
-In-place reading reuses a pre-allocated object for every record and less memory
-allocation happens in reading:
+The size of a BAM file is often extremely large.
+The iterator interface demonstrated above allocates an object for each record and that may be a bottleneck of reading data from a BAM file.
+In-place reading reuses a pre-allocated object for every record and less memory allocation happens in reading:
 
 ```julia
 reader = open(BAM.Reader, "data.bam")
@@ -81,16 +70,12 @@ end
 
 ## SAM and BAM Headers
 
-Both `SAM.Reader` and `BAM.Reader` implement the `header` function, which
-returns a `SAM.Header` object.
-To extract certain information out of the headers, you can use the `find` method
-on the header to extract information according to SAM/BAM tag. Again we refer
-you to the [specification](https://samtools.github.io/hts-specs/SAMv1.pdf) for
-full details of all the different tags that can occur in headers, and what they mean.
+Both `SAM.Reader` and `BAM.Reader` implement the `header` function, which returns a `SAM.Header` object.
+To extract certain information out of the headers, you can use the `find` method on the header to extract information according to SAM/BAM tag.
+Again we refer you to the [specification](https://samtools.github.io/hts-specs/SAMv1.pdf) for full details of all the different tags that can occur in headers, and what they mean.
 
-Below is an example of extracting all the info about the reference sequences from
-the BAM header. In SAM/BAM, any description of a reference sequence is stored
-in the header, under a tag denoted `SQ` (think `reference SeQuence`!).
+Below is an example of extracting all the info about the reference sequences from the BAM header.
+In SAM/BAM, any description of a reference sequence is stored in the header, under a tag denoted `SQ` (think `reference SeQuence`!).
 
 ```jlcon
 julia> reader = open(SAM.Reader, "data.sam");
@@ -121,8 +106,7 @@ julia> find(header(reader), "SQ")
 
 ```
 
-In the above we can see there were 7 sequences in the reference: 5 chromosomes,
-one chloroplast sequence, and one mitochondrial sequence.
+In the above we can see there were 7 sequences in the reference: 5 chromosomes, one chloroplast sequence, and one mitochondrial sequence.
 
 ## SAM and BAM Records
 
@@ -179,8 +163,7 @@ XAM.BAM.auxdata
 
 ## Accessing auxiliary data
 
-SAM and BAM records support the storing of optional data fields associated with
-tags.
+SAM and BAM records support the storing of optional data fields associated with tags.
 
 Tagged auxiliary data follows a format of `TAG:TYPE:VALUE`.
 `TAG` is a two-letter string, and each tag can only appear once per record.
@@ -202,17 +185,14 @@ For more information about these tags and their types we refer you to the
 There are some tags that are reserved, predefined standard tags, for
 specific uses.
 
-To access optional fields stored in tags, you use `getindex` indexing syntax on
-the record object.
+To access optional fields stored in tags, you use `getindex` indexing syntax on the record object.
 Note that accessing optional tag fields will result in type instability in Julia.
-This is because the type of the optional data is not known until run-time, as
-the tag is being read. This can have a significant impact on performance.
-To limit this, if the user knows the type of a
-value in advance, specifying it as a type annotation will alleviate the problem:
+This is because the type of the optional data is not known until run-time, as the tag is being read.
+This can have a significant impact on performance.
+To limit this, if the user knows the type of a value in advance, specifying it as a type annotation will alleviate the problem:
 
-Below is an example of looping over records in a bam file and using indexing
-syntax to get the data stored in the "NM" tag. Note the `UInt8` type assertion to
-alleviate type instability.
+Below is an example of looping over records in a bam file and using indexing syntax to get the data stored in the "NM" tag.
+Note the `UInt8` type assertion to alleviate type instability.
 
 ```julia
 for record in open(BAM.Reader, "data.bam")
@@ -223,9 +203,8 @@ end
 
 ## Getting records in a range
 
-XAM supports the BAI index to fetch records in a specific range
-from a BAM file.  [Samtools](https://samtools.github.io/) provides `index` subcommand to create an
-index file (.bai) from a sorted BAM file.
+XAM supports the BAI index to fetch records in a specific range from a BAM file.
+[Samtools](https://samtools.github.io/) provides `index` subcommand to create an index file (.bai) from a sorted BAM file.
 
 ```console
 $ samtools index -b SRR1238088.sort.bam
@@ -233,8 +212,7 @@ $ ls SRR1238088.sort.bam*
 SRR1238088.sort.bam     SRR1238088.sort.bam.bai
 ```
 
-`eachoverlap(reader, chrom, range)` returns an iterator of BAM records
-overlapping the query interval:
+`eachoverlap(reader, chrom, range)` returns an iterator of BAM records overlapping the query interval:
 
 ```julia
 reader = open(BAM.Reader, "SRR1238088.sort.bam", index="SRR1238088.sort.bam.bai")
@@ -250,9 +228,7 @@ close(reader)
 `eachoverlap` also accepts the `Interval` type defined in
 [GenomicFeatures.jl](https://github.com/BioJulia/GenomicFeatures.jl).
 
-This allows you to do things like first read in the genomic features from a GFF3
-file, and then for each feature, iterate over all the BAM records that overlap
-with that feature.
+This allows you to do things like first read in the genomic features from a GFF3 file, and then for each feature, iterate over all the BAM records that overlap with that feature.
 
 ```julia
 # Load GFF3 module.
@@ -309,8 +285,7 @@ SAM.Header(SAM.MetaInfo[SAM.MetaInfo:
 
 ```
 
-Then to create the writer for a SAM file, construct a `SAM.Writer` using the
-header and an `IO` type:
+Then to create the writer for a SAM file, construct a `SAM.Writer` using the header and an `IO` type:
 
 ```julia
 julia> samw = SAM.Writer(open("my-data.sam", "w"), h)
@@ -318,8 +293,7 @@ SAM.Writer(IOStream(<file my-data.sam>))
 
 ```
 
-To make a BAM Writer is slightly different, as you need to use a specific
-stream type from the [BGZFStreams](https://github.com/BioJulia/BGZFStreams.jl) package:
+To make a BAM Writer is slightly different, as you need to use a specific stream type from the [BGZFStreams](https://github.com/BioJulia/BGZFStreams.jl) package:
 
 ```julia
 julia> using BGZFStreams
@@ -329,8 +303,7 @@ BAM.Writer(BGZFStreams.BGZFStream{IOStream}(<mode=write>))
 
 ```
 
-Once you have a BAM or SAM writer, you can use the `write` method to write
-`BAM.Record`s or `SAM.Record`s to file:
+Once you have a BAM or SAM writer, you can use the `write` method to write `BAM.Record`s or `SAM.Record`s to file:
 
 ```julia
 julia> write(bamw, rec) # Here rec is a `BAM.Record`

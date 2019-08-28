@@ -20,8 +20,7 @@ Pages = ["api.md"]
 
 ## SAM API
 
-The following methods and types are provided by the SAM
-submodule for public use.
+The following methods and types are provided by the SAM submodule for public use.
 
 ```@autodocs
 Modules = [XAM.SAM]
@@ -30,8 +29,7 @@ private = false
 
 ## BAM API
 
-The following methods and types are provided by the BAM
-submodule for public use.
+The following methods and types are provided by the BAM submodule for public use.
 
 ```@autodocs
 Modules = [XAM.BAM]
