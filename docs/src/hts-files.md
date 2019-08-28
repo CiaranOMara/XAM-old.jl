@@ -14,8 +14,8 @@ which are the most popular file formats.
 
 If you have questions about the SAM and BAM formats or any of the terminology
 used when discussing these formats, see the published
-[specification][samtools-spec], which is
-maintained by the [samtools group][samtools].
+[specification](https://samtools.github.io/hts-specs/SAMv1.pdf), which is
+maintained by the [samtools group](https://samtools.github.io/).
 
 A very very simple SAM file looks like the following:
 
@@ -36,7 +36,7 @@ Sometimes one record describes one read, but there are other cases like chimeric
 reads and split alignments, where multiple records apply to one read. In the
 example above, `r003` is a chimeric read, and `r004` is a split alignment,
 and `r001` are mate pair reads. Again, we refer you to the official
-[specification][samtools-spec] for more details.
+[specification](https://samtools.github.io/hts-specs/SAMv1.pdf) for more details.
 
 A BAM file stores this same information but in a binary and compressible format
 that does not make for pretty printing here!
@@ -85,7 +85,7 @@ Both `SAM.Reader` and `BAM.Reader` implement the `header` function, which
 returns a `SAM.Header` object.
 To extract certain information out of the headers, you can use the `find` method
 on the header to extract information according to SAM/BAM tag. Again we refer
-you to the [specification][samtools-spec] for
+you to the [specification](https://samtools.github.io/hts-specs/SAMv1.pdf) for
 full details of all the different tags that can occur in headers, and what they mean.
 
 Below is an example of extracting all the info about the reference sequences from
@@ -196,8 +196,8 @@ Tagged auxiliary data follows a format of `TAG:TYPE:VALUE`.
 | 'B'  | Integer of numeric array          |
 
 For more information about these tags and their types we refer you to the
-[SAM/BAM specification][samtools-spec] and the additional
-[optional fields specification][samtags] document.
+[SAM/BAM specification](https://samtools.github.io/hts-specs/SAMv1.pdf) and the additional
+[optional fields specification](https://samtools.github.io/hts-specs/SAMtags.pdf) document.
 
 There are some tags that are reserved, predefined standard tags, for
 specific uses.
@@ -224,7 +224,7 @@ end
 ## Getting records in a range
 
 BioAlignments supports the BAI index to fetch records in a specific range
-from a BAM file.  [Samtools][samtools] provides `index` subcommand to create an
+from a BAM file.  [Samtools](https://samtools.github.io/) provides `index` subcommand to create an
 index file (.bai) from a sorted BAM file.
 
 ```console
@@ -319,7 +319,7 @@ SAM.Writer(IOStream(<file my-data.sam>))
 ```
 
 To make a BAM Writer is slightly different, as you need to use a specific
-stream type from the [BGZFStreams][bgzfstreams] package:
+stream type from the [BGZFStreams](https://github.com/BioJulia/BGZFStreams.jl) package:
 
 ```julia
 julia> using BGZFStreams
@@ -336,8 +336,3 @@ Once you have a BAM or SAM writer, you can use the `write` method to write
 julia> write(bamw, rec) # Here rec is a `BAM.Record`
 330780
 ```
-
-[samtools]:      https://samtools.github.io/
-[samtools-spec]: https://samtools.github.io/hts-specs/SAMv1.pdf
-[samtags]:       https://samtools.github.io/hts-specs/SAMtags.pdf
-[bgzfstreams]:   https://github.com/BioJulia/BGZFStreams.jl
