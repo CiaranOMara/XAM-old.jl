@@ -1,7 +1,8 @@
 using Test
 using XAM
-import BioAlignments: Alignment, AlignmentAnchor, OP_START, OP_MATCH, OP_DELETE, header
 using FormatSpecimens
+import XAM: header
+import BioAlignments: Alignment, AlignmentAnchor, OP_START, OP_MATCH, OP_DELETE
 # using BioSymbols
 import BGZFStreams: BGZFStream
 import BioGenerics.Exceptions: MissingFieldException
