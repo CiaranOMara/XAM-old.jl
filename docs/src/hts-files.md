@@ -9,7 +9,7 @@ common tasks in bioinformatics is to align these reads against known reference
 genomes, chromosomes, or contigs. BioAlignments provides several data formats
 commonly used for this kind of task.
 
-BioAlignments offers high-performance tools for SAM and BAM file formats,
+XAM offers high-performance tools for SAM and BAM file formats,
 which are the most popular file formats.
 
 If you have questions about the SAM and BAM formats or any of the terminology
@@ -126,7 +126,7 @@ one chloroplast sequence, and one mitochondrial sequence.
 
 ## SAM and BAM Records
 
-BioAlignments supports the following accessors for `SAM.Record` types.
+XAM supports the following accessors for `SAM.Record` types.
 
 ```@docs
 XAM.SAM.flag
@@ -150,7 +150,7 @@ XAM.SAM.quality
 XAM.SAM.auxdata
 ```
 
-BioAlignments supports the following accessors for `BAM.Record` types.
+XAM supports the following accessors for `BAM.Record` types.
 
 ```@docs
 XAM.BAM.flag
@@ -223,7 +223,7 @@ end
 
 ## Getting records in a range
 
-BioAlignments supports the BAI index to fetch records in a specific range
+XAM supports the BAI index to fetch records in a specific range
 from a BAM file.  [Samtools](https://samtools.github.io/) provides `index` subcommand to create an
 index file (.bai) from a sorted BAM file.
 

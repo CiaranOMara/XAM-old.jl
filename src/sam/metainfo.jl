@@ -28,12 +28,12 @@ Create a SAM metainfo from `str`.
 # Examples
 
     julia> SAM.MetaInfo("@CO\tsome comment")
-    BioAlignments.SAM.MetaInfo:
+    XAM.SAM.MetaInfo:
         tag: CO
       value: some comment
 
     julia> SAM.MetaInfo("@SQ\tSN:chr1\tLN:12345")
-    BioAlignments.SAM.MetaInfo:
+    XAM.SAM.MetaInfo:
         tag: SQ
       value: SN=chr1 LN=12345
 
@@ -53,7 +53,7 @@ otherwise, `value` is an iterable object with key and value pairs.
 # Examples
 
     julia> SAM.MetaInfo("CO", "some comment")
-    BioAlignments.SAM.MetaInfo:
+    XAM.SAM.MetaInfo:
         tag: CO
       value: some comment
 
@@ -61,7 +61,7 @@ otherwise, `value` is an iterable object with key and value pairs.
     "@CO\tsome comment"
 
     julia> SAM.MetaInfo("SQ", ["SN" => "chr1", "LN" => 12345])
-    BioAlignments.SAM.MetaInfo:
+    XAM.SAM.MetaInfo:
         tag: SQ
       value: SN=chr1 LN=12345
 
