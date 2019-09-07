@@ -64,6 +64,7 @@ include("metainfo.jl")
 include("record.jl")
 include("header.jl")
 include("reader.jl")
+include("readrecord.jl")
 include("writer.jl")
 
 end
