@@ -228,7 +228,6 @@ const sam_header_actions = merge(
         # end,
         :metainfo => quote
             record.filled = 1:@relpos(p-1)
-            found = true
             #Note: overwriting to remove escape.
         end,
         :header => quote
@@ -249,7 +248,7 @@ sam_header_context = Automa.CodeGenContext(
 sam_header_initcode = quote
     pos = 0
     filled = 0
-    found = false
+    finish_header = false
     # initialize!(record)
     record = MetaInfo()
     cs, linenum = state
@@ -266,7 +265,6 @@ sam_header_loopcode = quote
 
     record = MetaInfo()
 
-    # found && @goto __return__
     finish_header && @goto __return__
 end
 
