@@ -310,6 +310,14 @@ const sam_metainfo_machine, sam_record_machine, sam_header_machine, sam_body_mac
     return map(Automa.compile, (metainfo, record, header, body))
 end)()
 
+function appendfrom!(dst, dpos, src, spos, n)
+    if length(dst) < dpos + n - 1
+        resize!(dst, dpos + n - 1)
+    end
+    copyto!(dst, dpos, src, spos, n)
+    return dst
+end
+
 const sam_metainfo_actions = Dict(
     :metainfo_tag => :(record.tag = (pos1:p-1) .- offset),
     :metainfo_val => :(record.val = (pos1:p-1) .- offset),
