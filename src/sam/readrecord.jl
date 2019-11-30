@@ -1,3 +1,4 @@
+#=
 @inline function anchor!(stream::BufferedStreams.BufferedInputStream, p, immobilize = true)
     stream.anchor = p
     stream.immobilized = immobilize
@@ -166,6 +167,7 @@ function generate_read_function(reader_type, machine, init_code, actions; kwargs
         end
     end
 end
+=#
 
 
 # file   = header . body
@@ -320,6 +322,7 @@ const sam_metainfo_actions = Dict(
     :pos2  => :(pos2 = p)
 )
 
+#=
 generate_index_function(
     MetaInfo,
     sam_metainfo_machine,
@@ -350,6 +353,8 @@ generate_readheader_function(
         end
     end
 ) |> eval
+=#
+
 
 const sam_record_actions = Dict(
     :record_qname => :(record.qname = (pos:p-1) .- offset),
@@ -372,6 +377,7 @@ const sam_record_actions = Dict(
     :pos         => :(pos = p)
 )
 
+#=
 generate_index_function(
     Record,
     sam_record_machine,
@@ -394,3 +400,4 @@ generate_read_function(
         :mark    => :(anchor!(stream, p); offset = p - 1))
     )
 ) |> eval
+=#
