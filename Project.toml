@@ -12,6 +12,7 @@ BioSequences = "7e6ae17a-c86d-528c-b3b9-7f778a29fe59"
 BufferedStreams = "e1450e63-4bb3-523b-b2a4-4ffa8c0fd77d"
 GenomicFeatures = "899a7d2d-5c61-547b-bef9-6698a8d05446"
 Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+TranscodingStreams = "3bb67fe8-82b1-5028-8e26-92a6c54297fa"
 
 [extras]
 FormatSpecimens = "3372ea36-2a1a-11e9-3eb7-996970b6ffbd"
