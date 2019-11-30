@@ -13,11 +13,14 @@ function Reader(state::State{S}) where {S <: TranscodingStream}
 
     rdr = Reader(state, Header())
 
-    # readheader!(rdr)
-    # cs, ln, f = readheader!(rdr.state.stream, rdr, (rdr.state.state, rdr.state.linenum))
-    readheader!(rdr.state.stream, rdr, (rdr.state.state, rdr.state.linenum))
+    cs, ln, f = readheader!(rdr.state.stream, rdr, (rdr.state.state, rdr.state.linenum))
 
     rdr.state.state = sam_body_machine.start_state
+    
+    # rdr.state.state = cs
+    # rdr.state.linenum = ln
+    # rdr.state.filled = false
+
     return rdr
 end
 
