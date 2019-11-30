@@ -169,6 +169,8 @@ function generate_read_function(reader_type, machine, init_code, actions; kwargs
 end
 =#
 
+# Automa.jl generated readrecord! and readmetainfo! functions
+# ========================================
 
 # file   = header . body
 # header = metainfo*
