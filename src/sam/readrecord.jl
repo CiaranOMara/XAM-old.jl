@@ -140,6 +140,19 @@ const sam_metainfo_machine, sam_record_machine, sam_header_machine, sam_body_mac
 end)()
 
 
+write("sam_metainfo_machine.dot", Automa.machine2dot(sam_metainfo_machine))
+run(`dot -Tsvg -o sam_metainfo_machine.svg sam_metainfo_machine.dot`)
+
+write("sam_record_machine.dot", Automa.machine2dot(sam_record_machine))
+run(`dot -Tsvg -o sam_record_machine.svg sam_record_machine.dot`)
+
+write("sam_header_machine.dot", Automa.machine2dot(sam_header_machine))
+run(`dot -Tsvg -o sam_header_machine.svg sam_header_machine.dot`)
+
+write("sam_body_machine.dot", Automa.machine2dot(sam_body_machine))
+run(`dot -Tsvg -o sam_body_machine.svg sam_body_machine.dot`)
+
+
 function appendfrom!(dst, dpos, src, spos, n)
     if length(dst) < dpos + n - 1
         resize!(dst, dpos + n - 1)
@@ -154,18 +167,20 @@ const sam_metainfo_actions = Dict(
     :pos1  => :(pos1 = @relpos(p)),
     :pos2  => :(pos2 = @relpos(p)),
     :countline => :(linenum += 1),
-    :metainfo_tag => :(record.tag = pos1:@relpos(p-1)),
-    :metainfo_val => :(record.val = pos1:@relpos(p-1)),
-    :metainfo_dict_key => :(push!(record.dictkey, pos2:@relpos(p-1))),
-    :metainfo_dict_val => :(push!(record.dictval, pos2:@relpos(p-1))),
+    :metainfo_tag => :(metainfo.tag = pos1:@relpos(p-1)),
+    :metainfo_val => :(metainfo.val = pos1:@relpos(p-1)),
+    :metainfo_dict_key => :(push!(metainfo.dictkey, pos2:@relpos(p-1))),
+    :metainfo_dict_val => :(push!(metainfo.dictval, pos2:@relpos(p-1))),
     # :metainfo => quote
     #     resize_and_copy!(record.data, data, offset+1:p-1)
     #     record.filled = (offset+1:p-1) .- offset
     # end,
     :metainfo => quote
         # record.filled = 1:filled
-        record.filled = 1:@relpos(p-1)
-        found = true
+        appendfrom!(metainfo.data, 1, data, @markpos, p-@markpos)
+        # record.filled = 1:(p-@markpos)
+        metainfo.filled = 1:@relpos(p-1)
+        found_metainfo = true
         @escape
     end
 
@@ -178,10 +193,11 @@ sam_metainfo_context = Automa.CodeGenContext(
 )
 
 sam_metainfo_initcode = quote
+    @info "sam_metainfo_initcode" typeof(metainfo)
     pos = 0
     filled = 0
-    found = false
-    initialize!(record)
+    found_metainfo = false
+    initialize!(metainfo)
     cs, linenum = state
 end
 
@@ -189,17 +205,17 @@ sam_metainfo_loopcode = quote
     if cs < 0
         throw(ArgumentError("malformed metainfo at line $(linenum)"))
     end
-    found && @goto __return__
+    found_metainfo && @goto __return__
 end
 
 sam_metainfo_returncode = quote
-    return cs, linenum, found
+    return cs, linenum, found_metainfo
 end
 
 Automa.Stream.generate_reader(
     :readmetainfo!,
     sam_metainfo_machine,
-    arguments = (:(record::MetaInfo), :(state::Tuple{Int,Int})),
+    arguments = (:(metainfo::MetaInfo), :(state::Tuple{Int,Int})),
     actions = sam_metainfo_actions,
     context = sam_metainfo_context,
     initcode = sam_metainfo_initcode,
@@ -227,8 +243,12 @@ const sam_header_actions = merge(
         #
         # end,
         :metainfo => quote
-            record.filled = 1:@relpos(p-1)
-            #Note: overwriting to remove escape.
+            # record.filled = 1:filled
+            appendfrom!(metainfo.data, 1, data, @markpos, p-@markpos)
+            # record.filled = 1:(p-@markpos)
+            metainfo.filled = 1:@relpos(p-1)
+            found_metainfo = true
+            # @escape
         end,
         :header => quote
             finish_header = true
@@ -247,29 +267,32 @@ sam_header_context = Automa.CodeGenContext(
 
 sam_header_initcode = quote
     pos = 0
-    filled = 0
+    # filled = 0
+    found_metainfo = false
     finish_header = false
     # initialize!(record)
-    record = MetaInfo()
+    metainfo = MetaInfo()
     cs, linenum = state
 end
 
 sam_header_loopcode = quote
+    @info "sam_header_loopcode" cs metainfo.filled metainfo.data
+
     if cs < 0
         throw(ArgumentError("malformed metainfo at line $(linenum)"))
     end
 
-    @assert isfilled(record) #TODO: move to loopcode?
+    @assert isfilled(metainfo) #TODO: move to loopcode?
 
-    push!(reader.header.metainfo, record) #TODO: move to loopcode?
+    push!(reader.header.metainfo, metainfo) #TODO: move to loopcode?
 
-    record = MetaInfo()
+    metainfo = MetaInfo()
 
     finish_header && @goto __return__
 end
 
 sam_header_returncode = quote
-    return cs, linenum, found
+    return cs, linenum, finish_header
 end
 
 Automa.Stream.generate_reader(
@@ -288,24 +311,30 @@ const sam_record_actions = Dict(
     :pos => :(pos = @relpos(p)),
     :countline => :(linenum += 1),
 
-    :record_qname => :(record.qname = (pos:@relpos(p-1))),
-    :record_flag  => :(record.flag  = (pos:@relpos(p-1))),
-    :record_rname => :(record.rname = (pos:@relpos(p-1))),
-    :record_pos   => :(record.pos   = (pos:@relpos(p-1))),
-    :record_mapq  => :(record.mapq  = (pos:@relpos(p-1))),
-    :record_cigar => :(record.cigar = (pos:@relpos(p-1))),
-    :record_rnext => :(record.rnext = (pos:@relpos(p-1))),
-    :record_pnext => :(record.pnext = (pos:@relpos(p-1))),
-    :record_tlen  => :(record.tlen  = (pos:@relpos(p-1))),
-    :record_seq   => :(record.seq   = (pos:@relpos(p-1))),
-    :record_qual  => :(record.qual  = (pos:@relpos(p-1))),
-    :record_field => :(push!(record.fields, (pos:@relpos(p-1)))),
+    :record_qname => :(record.qname = pos:@relpos(p-1)),
+    :record_flag  => :(record.flag  = pos:@relpos(p-1)),
+    :record_rname => :(record.rname = pos:@relpos(p-1)),
+    :record_pos   => :(record.pos   = pos:@relpos(p-1)),
+    :record_mapq  => :(record.mapq  = pos:@relpos(p-1)),
+    :record_cigar => :(record.cigar = pos:@relpos(p-1)),
+    :record_rnext => :(record.rnext = pos:@relpos(p-1)),
+    :record_pnext => :(record.pnext = pos:@relpos(p-1)),
+    :record_tlen  => :(record.tlen  = pos:@relpos(p-1)),
+    :record_seq   => :(record.seq   = pos:@relpos(p-1)),
+    :record_qual  => :(record.qual  = pos:@relpos(p-1)),
+    :record_field => quote
+        @info ":record_field" p pos:@relpos(p-1)
+        push!(record.fields, pos:@relpos(p-1))
+    end,
     :record       => quote
+        @info ":record" pos p @relpos(p-1)
         # resize_and_copy!(record.data, data, 1:p-1)
         # record.filled = (offset+1:p-1) .- offset
         # record.filled = 1:filled
+        appendfrom!(record.data, 1, data, @markpos, p-@markpos)
+        # record.filled = 1:(p-@markpos)
         record.filled = 1:@relpos(p-1)
-        found = true
+        found_record = true
         @escape
     end
     # :mark       => :(),
@@ -321,20 +350,22 @@ sam_record_context = Automa.CodeGenContext(
 sam_record_initcode = quote
     pos = 0
     filled = 0
-    found = false
+    found_record = false
     initialize!(record)
     cs, linenum = state
+    @info "sam_record_initcode" cs record
 end
 
 sam_record_loopcode = quote
+    @info "sam_record_loopcode" cs linenum pos filled record.filled record.fields
     if cs < 0
         throw(ArgumentError("malformed SAM file at line $(linenum)"))
     end
-    found && @goto __return__
+    found_record && @goto __return__
 end
 
 sam_record_returncode = quote
-    return cs, linenum, found
+    return cs, linenum, found_record
 end
 
 Automa.Stream.generate_reader(
